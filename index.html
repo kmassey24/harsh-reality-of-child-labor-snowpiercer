@@ -22,20 +22,19 @@ body {
 }
 
 #btn-spin {
-    font: bold 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    font: bold 11px/16px Arial, Helvetica, sans-serif;
     background-color: #3386c0;
     color: #fff;
     position: absolute;
-    top: 20px;
+    bottom: 20px;           /* move to bottom */
     left: 50%;
-    z-index: 2;
+    transform: translateX(-50%);  /* perfectly center */
+    z-index: 3;
     border: none;
-    width: 200px;
-    margin-left: -100px;
-    display: block;
+    width: 140px;           /* smaller width */
     cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 3px;
+    padding: 6px 10px;      /* smaller padding */
+    border-radius: 6px;
 }
 
 #btn-spin:hover {
@@ -46,12 +45,12 @@ body {
     position: absolute;
     top: 20px;
     left: 20px;
-    z-index: 2;
+    z-index: 3;
     color: white;
     background: rgba(0, 0, 0, 0.65);
     padding: 16px 20px;
     border-radius: 10px;
-    max-width: 320px;
+    max-width: 360px;
 }
 
 #title-box h1 {
@@ -61,17 +60,29 @@ body {
 
 #title-box p {
     margin: 0;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.4;
 }
 
-.mapboxgl-popup {
-    max-width: 250px;
+.w-marker {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #c61f1f;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border: 2px solid white;
+    box-shadow: 0 0 6px rgba(0,0,0,0.4);
+    cursor: pointer;
 }
 
 .mapboxgl-popup-content {
     font-family: Arial, Helvetica, sans-serif;
     padding: 12px;
+    max-width: 240px;
 }
 </style>
 </head>
@@ -82,7 +93,7 @@ body {
 
 <div id="title-box">
     <h1>Harsh Reality of Child Labor</h1>
-    <p>Inspired by <em>Snowpiercer</em>. Explore locations, stories, and sources connected to child labor around the world.</p>
+    <p>Inspired by <em>Snowpiercer</em>. This map traces the Wilford train route with clickable stops and a connected path to learn about...</p>
 </div>
 
 <button id="btn-spin">Pause rotation</button>
@@ -94,14 +105,15 @@ const map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/mapbox/standard-satellite',
     projection: 'globe',
-    zoom: 1.5,
-    center: [-90, 40]
+    zoom: 1.4,
+    center: [15, 20]
 });
 
 map.on('style.load', () => {
     map.setFog({});
 });
 
+/* ROTATION */
 const secondsPerRevolution = 120;
 const maxSpinZoom = 5;
 const slowSpinZoom = 3;
@@ -125,38 +137,17 @@ function spinGlobe() {
         map.easeTo({
             center,
             duration: 1000,
-            easing: (n) => n
+            easing: n => n
         });
     }
 }
 
-map.on('mousedown', () => {
-    userInteracting = true;
-});
-
-map.on('mouseup', () => {
-    userInteracting = false;
-    spinGlobe();
-});
-
-map.on('dragend', () => {
-    userInteracting = false;
-    spinGlobe();
-});
-
-map.on('pitchend', () => {
-    userInteracting = false;
-    spinGlobe();
-});
-
-map.on('rotateend', () => {
-    userInteracting = false;
-    spinGlobe();
-});
-
-map.on('moveend', () => {
-    spinGlobe();
-});
+map.on('mousedown', () => { userInteracting = true; });
+map.on('mouseup', () => { userInteracting = false; spinGlobe(); });
+map.on('dragend', () => { userInteracting = false; spinGlobe(); });
+map.on('pitchend', () => { userInteracting = false; spinGlobe(); });
+map.on('rotateend', () => { userInteracting = false; spinGlobe(); });
+map.on('moveend', () => { spinGlobe(); });
 
 document.getElementById('btn-spin').addEventListener('click', (e) => {
     spinEnabled = !spinEnabled;
@@ -169,39 +160,89 @@ document.getElementById('btn-spin').addEventListener('click', (e) => {
     }
 });
 
-/* PINS + POPUPS */
-const locations = [
-    {
-        name: "India",
-        coordinates: [78.9629, 20.5937],
-        description: "Learn more about child labor issues in India.",
-        link: "https://www.unicef.org/india/what-we-do/child-labour"
-    },
-    {
-        name: "Bangladesh",
-        coordinates: [90.3563, 23.6850],
-        description: "Read about labor conditions and garment industry concerns.",
-        link: "https://www.ilo.org/"
-    },
-    {
-        name: "Democratic Republic of the Congo",
-        coordinates: [21.7587, -4.0383],
-        description: "Explore child labor and mining issues.",
-        link: "https://www.hrw.org/"
-    }
+/* APPROXIMATE WILFORD ROUTE POINTS
+   Replace or add coordinates to match your exact project map */
+const routePoints = [
+    { name: "Vancouver", coordinates: [-123.1207, 49.2827], description: "Approximate Wilford route point in western Canada.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" },
+    { name: "Chicago", coordinates: [-87.6298, 41.8781], description: "Major North American route point.", link: "https://snowpiercer.fandom.com/wiki/Wilford_Industries" },
+    { name: "New York", coordinates: [-74.0060, 40.7128], description: "Eastern North American route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
+    { name: "Mexico City", coordinates: [-99.1332, 19.4326], description: "Approximate Central America route point.", link: "https://en.wikipedia.org/wiki/Child_labour" },
+    { name: "Panama", coordinates: [-79.5199, 8.9824], description: "Connecting North and South America.", link: "https://www.ilo.org/" },
+    { name: "Bogotá", coordinates: [-74.0721, 4.7110], description: "Northern South America route point.", link: "https://www.unicef.org/" },
+    { name: "Lima", coordinates: [-77.0428, -12.0464], description: "Western South America route point.", link: "https://www.unicef.org/protection/child-labour" },
+    { name: "Santiago", coordinates: [-70.6693, -33.4489], description: "Southern South America route point.", link: "https://www.hrw.org/" },
+    { name: "Buenos Aires", coordinates: [-58.3816, -34.6037], description: "Atlantic side South America route point.", link: "https://www.ilo.org/global/topics/child-labour/" },
+    { name: "Rio de Janeiro", coordinates: [-43.1729, -22.9068], description: "Eastern South America route point.", link: "https://www.unicef.org/" },
+    { name: "Dakar", coordinates: [-17.4677, 14.7167], description: "West Africa route point.", link: "https://www.ilo.org/" },
+    { name: "Lagos", coordinates: [3.3792, 6.5244], description: "West Africa inland route point.", link: "https://www.unicef.org/" },
+    { name: "Nairobi", coordinates: [36.8219, -1.2921], description: "East Africa route point.", link: "https://www.hrw.org/topic/childrens-rights" },
+    { name: "Cape Town", coordinates: [18.4241, -33.9249], description: "Southern Africa route point.", link: "https://www.ilo.org/" },
+    { name: "Cairo", coordinates: [31.2357, 30.0444], description: "North Africa to Middle East connection.", link: "https://www.unicef.org/" },
+    { name: "Istanbul", coordinates: [28.9784, 41.0082], description: "Europe and Asia connection point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
+    { name: "Berlin", coordinates: [13.4050, 52.5200], description: "Central Europe route point.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" },
+    { name: "Warsaw", coordinates: [21.0122, 52.2297], description: "Eastern Europe route point.", link: "https://en.wikipedia.org/wiki/Wilford_Industries" },
+    { name: "Moscow", coordinates: [37.6173, 55.7558], description: "Western Russia route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
+    { name: "Novosibirsk", coordinates: [82.9204, 55.0302], description: "Siberian route point.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" },
+    { name: "Vladivostok", coordinates: [131.8855, 43.1155], description: "Far East Russia route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
+    { name: "Seoul", coordinates: [126.9780, 37.5665], description: "East Asia route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
+    { name: "Beijing", coordinates: [116.4074, 39.9042], description: "Northern China route point.", link: "https://www.unicef.org/china" },
+    { name: "Delhi", coordinates: [77.1025, 28.7041], description: "South Asia route point.", link: "https://www.unicef.org/india/what-we-do/child-labour" },
+    { name: "Mumbai", coordinates: [72.8777, 19.0760], description: "Western India route point.", link: "https://www.ilo.org/" },
+    { name: "Bangkok", coordinates: [100.5018, 13.7563], description: "Southeast Asia route point.", link: "https://www.unicef.org/eap/" },
+    { name: "Jakarta", coordinates: [106.8456, -6.2088], description: "Indonesia route point.", link: "https://www.ilo.org/" },
+    { name: "Perth", coordinates: [115.8605, -31.9505], description: "Western Australia route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
+    { name: "Adelaide", coordinates: [138.6007, -34.9285], description: "Southern Australia route point.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" },
+    { name: "Melbourne", coordinates: [144.9631, -37.8136], description: "Southeastern Australia route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
+    { name: "Sydney", coordinates: [151.2093, -33.8688], description: "Eastern Australia route point.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" },
+    { name: "Brisbane", coordinates: [153.0251, -27.4698], description: "Northeastern Australia route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
+    { name: "Anchorage", coordinates: [-149.9003, 61.2181], description: "Pacific return route point.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" }
 ];
 
-locations.forEach(location => {
+/* MARKERS + POPUPS */
+routePoints.forEach(point => {
+    const el = document.createElement('div');
+    el.className = 'w-marker';
+    el.textContent = 'W';
+
     const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
-        <h3>${location.name}</h3>
-        <p>${location.description}</p>
-        <a href="${location.link}" target="_blank">Open source</a>
+        <h3>${point.name}</h3>
+        <p>${point.description}</p>
+        <p><a href="${point.link}" target="_blank" rel="noopener noreferrer">Open link</a></p>
     `);
 
-    new mapboxgl.Marker()
-        .setLngLat(location.coordinates)
+    new mapboxgl.Marker(el)
+        .setLngLat(point.coordinates)
         .setPopup(popup)
         .addTo(map);
+});
+
+/* CONNECTING LINE */
+map.on('load', () => {
+    map.addSource('wilford-route', {
+        type: 'geojson',
+        data: {
+            type: 'Feature',
+            geometry: {
+                type: 'LineString',
+                coordinates: routePoints.map(point => point.coordinates)
+            }
+        }
+    });
+
+    map.addLayer({
+        id: 'wilford-route-line',
+        type: 'line',
+        source: 'wilford-route',
+        layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+        },
+        paint: {
+            'line-color': '#ff003c',
+            'line-width': 4,
+            'line-opacity': 0.9
+        }
+    });
 });
 
 spinGlobe();
