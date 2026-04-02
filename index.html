@@ -2,139 +2,209 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>Snowpiercer & Harsh Reality of Child Labor </title>
+<title>Snowpiercer & Harsh Reality of Child Labor</title>
 <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.20.0/mapbox-gl.js"></script>
+
 <style>
-body { margin: 0; padding: 0; }
-#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+}
+
+#btn-spin {
+    font: bold 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    background-color: #3386c0;
+    color: #fff;
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    z-index: 2;
+    border: none;
+    width: 200px;
+    margin-left: -100px;
+    display: block;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 3px;
+}
+
+#btn-spin:hover {
+    background-color: #4ea0da;
+}
+
+#title-box {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 2;
+    color: white;
+    background: rgba(0, 0, 0, 0.65);
+    padding: 16px 20px;
+    border-radius: 10px;
+    max-width: 320px;
+}
+
+#title-box h1 {
+    margin: 0 0 8px 0;
+    font-size: 28px;
+}
+
+#title-box p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.mapboxgl-popup {
+    max-width: 250px;
+}
+
+.mapboxgl-popup-content {
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 12px;
+}
 </style>
 </head>
+
 <body>
-<style>
-    #btn-spin {
-        font:
-            bold 12px/20px 'Helvetica Neue',
-            Arial,
-            Helvetica,
-            sans-serif;
-        background-color: #3386c0;
-        color: #fff;
-        position: absolute;
-        top: 20px;
-        left: 50%;
-        z-index: 1;
-        border: none;
-        width: 200px;
-        margin-left: -100px;
-        display: block;
-        cursor: pointer;
-        padding: 10px 20px;
-        border-radius: 3px;
-    }
-    #btn-spin:hover {
-        background-color: #4ea0da;
-    }
-</style>
-<div id="map"></div>
+
 <div id="map"></div>
 
-<div style="position:absolute; top:20px; left:20px; color:white; z-index:2;">
+<div id="title-box">
     <h1>Harsh Reality of Child Labor</h1>
-    <p>Inspired by Snowpiercer</p>
+    <p>Inspired by <em>Snowpiercer</em>. Explore locations, stories, and sources connected to child labor around the world.</p>
 </div>
-	
+
 <button id="btn-spin">Pause rotation</button>
+
 <script>
-	// TO MAKE THE MAP APPEAR YOU MUST
-	// ADD YOUR ACCESS TOKEN FROM
-	// https://account.mapbox.com
-    mapboxgl.accessToken = 'pk.eyJ1Ijoia21hc3NleTI0IiwiYSI6ImNtbmh2M2twZTA2dDYycXE0bzk4MnF0MHUifQ.KoZTF78tepyeEzVhuHST0g';
-    const map = new mapboxgl.Map({
-        container: 'map',
-        style: 'mapbox://styles/mapbox/standard-satellite',
-        zoom: 1.5,
-        center: [-90, 40]
-    });
+mapboxgl.accessToken = 'pk.eyJ1Ijoia21hc3NleTI0IiwiYSI6ImNtbmh2M2twZTA2dDYycXE0bzk4MnF0MHUifQ.KoZTF78tepyeEzVhuHST0g';
 
-    map.on('style.load', () => {
-        map.setFog({}); // Set the default atmosphere style
-    });
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/standard-satellite',
+    projection: 'globe',
+    zoom: 1.5,
+    center: [-90, 40]
+});
 
-    // The following values can be changed to control rotation speed:
+map.on('style.load', () => {
+    map.setFog({});
+});
 
-    // At low zooms, complete a revolution every two minutes.
-    const secondsPerRevolution = 120;
-    // Above zoom level 5, do not rotate.
-    const maxSpinZoom = 5;
-    // Rotate at intermediate speeds between zoom levels 3 and 5.
-    const slowSpinZoom = 3;
+const secondsPerRevolution = 120;
+const maxSpinZoom = 5;
+const slowSpinZoom = 3;
 
-    let userInteracting = false;
-    let spinEnabled = true;
+let userInteracting = false;
+let spinEnabled = true;
 
-    function spinGlobe() {
-        const zoom = map.getZoom();
-        if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
-            let distancePerSecond = 360 / secondsPerRevolution;
-            if (zoom > slowSpinZoom) {
-                // Slow spinning at higher zooms
-                const zoomDif =
-                    (maxSpinZoom - zoom) / (maxSpinZoom - slowSpinZoom);
-                distancePerSecond *= zoomDif;
-            }
-            const center = map.getCenter();
-            center.lng -= distancePerSecond;
-            // Smoothly animate the map over one second.
-            // When this animation is complete, it calls a 'moveend' event.
-            map.easeTo({ center, duration: 1000, easing: (n) => n });
+function spinGlobe() {
+    const zoom = map.getZoom();
+    if (spinEnabled && !userInteracting && zoom < maxSpinZoom) {
+        let distancePerSecond = 360 / secondsPerRevolution;
+
+        if (zoom > slowSpinZoom) {
+            const zoomDif = (maxSpinZoom - zoom) / (maxSpinZoom - slowSpinZoom);
+            distancePerSecond *= zoomDif;
         }
+
+        const center = map.getCenter();
+        center.lng -= distancePerSecond;
+
+        map.easeTo({
+            center,
+            duration: 1000,
+            easing: (n) => n
+        });
     }
+}
 
-    // Pause spinning on interaction
-    map.on('mousedown', () => {
-        userInteracting = true;
-    });
+map.on('mousedown', () => {
+    userInteracting = true;
+});
 
-    // Restart spinning the globe when interaction is complete
-    map.on('mouseup', () => {
-        userInteracting = false;
-        spinGlobe();
-    });
-
-    // These events account for cases where the mouse has moved
-    // off the map, so 'mouseup' will not be fired.
-    map.on('dragend', () => {
-        userInteracting = false;
-        spinGlobe();
-    });
-    map.on('pitchend', () => {
-        userInteracting = false;
-        spinGlobe();
-    });
-    map.on('rotateend', () => {
-        userInteracting = false;
-        spinGlobe();
-    });
-
-    // When animation is complete, start spinning if there is no ongoing interaction
-    map.on('moveend', () => {
-        spinGlobe();
-    });
-
-    document.getElementById('btn-spin').addEventListener('click', (e) => {
-        spinEnabled = !spinEnabled;
-        if (spinEnabled) {
-            spinGlobe();
-            e.target.innerHTML = 'Pause rotation';
-        } else {
-            map.stop(); // Immediately end ongoing animation
-            e.target.innerHTML = 'Start rotation';
-        }
-    });
-
+map.on('mouseup', () => {
+    userInteracting = false;
     spinGlobe();
+});
+
+map.on('dragend', () => {
+    userInteracting = false;
+    spinGlobe();
+});
+
+map.on('pitchend', () => {
+    userInteracting = false;
+    spinGlobe();
+});
+
+map.on('rotateend', () => {
+    userInteracting = false;
+    spinGlobe();
+});
+
+map.on('moveend', () => {
+    spinGlobe();
+});
+
+document.getElementById('btn-spin').addEventListener('click', (e) => {
+    spinEnabled = !spinEnabled;
+    if (spinEnabled) {
+        spinGlobe();
+        e.target.innerHTML = 'Pause rotation';
+    } else {
+        map.stop();
+        e.target.innerHTML = 'Start rotation';
+    }
+});
+
+/* PINS + POPUPS */
+const locations = [
+    {
+        name: "India",
+        coordinates: [78.9629, 20.5937],
+        description: "Learn more about child labor issues in India.",
+        link: "https://www.unicef.org/india/what-we-do/child-labour"
+    },
+    {
+        name: "Bangladesh",
+        coordinates: [90.3563, 23.6850],
+        description: "Read about labor conditions and garment industry concerns.",
+        link: "https://www.ilo.org/"
+    },
+    {
+        name: "Democratic Republic of the Congo",
+        coordinates: [21.7587, -4.0383],
+        description: "Explore child labor and mining issues.",
+        link: "https://www.hrw.org/"
+    }
+];
+
+locations.forEach(location => {
+    const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+        <h3>${location.name}</h3>
+        <p>${location.description}</p>
+        <a href="${location.link}" target="_blank">Open source</a>
+    `);
+
+    new mapboxgl.Marker()
+        .setLngLat(location.coordinates)
+        .setPopup(popup)
+        .addTo(map);
+});
+
+spinGlobe();
 </script>
 
 </body>
