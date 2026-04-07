@@ -64,12 +64,27 @@ body {
     line-height: 1.4;
 }
 
-.w-marker {
+.w-marker-red {
     width: 28px;
     height: 28px;
     border-radius: 50%;
     background: #c61f1f;
     color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border: 2px solid white;
+    box-shadow: 0 0 6px rgba(0,0,0,0.4);
+    cursor: pointer;
+}
+
+.w-marker-yellow {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #f1c40f;  /* yellow */
+    color: black;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -165,7 +180,7 @@ document.getElementById('btn-spin').addEventListener('click', (e) => {
 const routePoints = [
     { name: "Vancouver", coordinates: [-123.1207, 49.2827], description: "Approximate Wilford route point in western Canada.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" },
     { name: "Chicago", coordinates: [-87.6298, 41.8781], description: "Major North American route point.", link: "https://snowpiercer.fandom.com/wiki/Wilford_Industries" },
-    { name: "New York", coordinates: [-74.0060, 40.7128], description: "Eastern North American route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
+    { name: "New York", coordinates: [-74.0060, 40.7128], description: "Eastern North American route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer", color: "yellow" },
     { name: "Mexico City", coordinates: [-99.1332, 19.4326], description: "Approximate Central America route point.", link: "https://en.wikipedia.org/wiki/Child_labour" },
     { name: "Panama", coordinates: [-79.5199, 8.9824], description: "Connecting North and South America.", link: "https://www.ilo.org/" },
     { name: "Bogotá", coordinates: [-74.0721, 4.7110], description: "Northern South America route point.", link: "https://www.unicef.org/" },
@@ -201,7 +216,14 @@ const routePoints = [
 /* MARKERS + POPUPS */
 routePoints.forEach(point => {
     const el = document.createElement('div');
-    el.className = 'w-marker';
+
+    // choose color
+    if (point.color === "yellow") {
+        el.className = 'w-marker-yellow';
+    } else {
+        el.className = 'w-marker-red';
+    }
+    
     el.textContent = 'W';
 
     const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
