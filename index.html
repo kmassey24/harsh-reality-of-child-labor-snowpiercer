@@ -252,7 +252,6 @@ const routePoints = [
     { name: "Brisbane, Australia", coordinates: [153.0251, -27.4698] },
     { name: "Hanoi, Vietnam", coordinates: [105.8342, 21.0278] },
     { name: "Beijing, China", coordinates: [116.4074, 39.9042] },
-    { name: "Maragan, Russia", coordinates: [150.8128, 59.5594] },
     { name: "Wales, Alaska", coordinates: [-168.0822, 65.6136] },
     { name: "Anchorage, Alaska", coordinates: [-149.9003, 61.2181] },
     { name: "Vancouver, British Columbia", coordinates: [-123.1207, 49.2827] },
@@ -304,13 +303,67 @@ routePoints.forEach(point => {
 
 /* CONNECTING LINE */
 map.on('load', () => {
+    const lineCoordinates = [
+        [ -87.6298, 41.8781 ],   // Chicago
+        [ -73.5673, 45.5017 ],   // Montreal
+        [ -68.5197, 63.7467 ],   // Iqaluit
+        [ 37.6173, 55.7558 ],    // Moscow
+        [ 27.5615, 53.9045 ],    // Minsk
+        [ 13.4050, 52.5200 ],    // Berlin
+        [ 2.3522, 48.8566 ],     // Paris
+        [ 7.4246, 43.7384 ],     // Monaco
+        [ -3.7038, 40.4168 ],    // Madrid
+        [ -6.8498, 34.0209 ],    // Rabat
+        [ 7.3986, 9.0765 ],      // Abuja
+        [ 18.4241, -33.9249 ],   // Cape Town
+        [ 28.0473, -26.2041 ],   // Johannesburg
+        [ 36.8219, -1.2921 ],    // Nairobi
+        [ 35.2137, 31.7683 ],    // Jerusalem
+        [ 51.3890, 35.6892 ],    // Tehran
+        [ 59.6062, 36.2605 ],    // Mashhad
+        [ 73.0479, 33.6844 ],    // Islamabad
+        [ 77.1025, 28.7041 ],    // New Delhi
+        [ 85.3240, 27.7172 ],    // Kathmandu
+        [ 90.4125, 23.8103 ],    // Dhaka
+        [ 96.0891, 21.9588 ],    // Mandalay
+        [ 100.5018, 13.7563 ],   // Bangkok
+        [ 101.6869, 3.1390 ],    // Kuala Lumpur
+        [ 103.8198, 1.3521 ],    // Singapore
+        [ 106.8456, -6.2088 ],   // Jakarta
+        [ 130.8456, -12.4634 ],  // Darwin
+        [ 115.8605, -31.9505 ],  // Perth
+        [ 138.6007, -34.9285 ],  // Adelaide
+        [ 144.9631, -37.8136 ],  // Melbourne
+        [ 151.2093, -33.8688 ],  // Sydney
+        [ 153.0251, -27.4698 ],  // Brisbane
+        [ 105.8342, 21.0278 ],   // Hanoi
+        [ 116.4074, 39.9042 ],   // Beijing
+
+        // crossed dateline, so add 360 to keep route moving forward
+        [ 191.9178, 65.6136 ],   // Wales, Alaska   (-168.0822 + 360)
+        [ 210.0997, 61.2181 ],   // Anchorage       (-149.9003 + 360)
+        [ 236.8793, 49.2827 ],   // Vancouver       (-123.1207 + 360)
+        [ 260.8668, 19.4326 ],   // Mexico City     (-99.1332 + 360)
+        [ 269.4931, 14.6349 ],   // Guatemala City  (-90.5069 + 360)
+        [ 275.9093, 9.9281 ],    // San Jose        (-84.0907 + 360)
+        [ 280.4801, 8.9824 ],    // Panama City     (-79.5199 + 360)
+        [ 285.9279, 4.7110 ],    // Bogota          (-74.0721 + 360)
+        [ 291.8807, -16.4897 ],  // La Paz          (-68.1193 + 360)
+        [ 301.6184, -34.6037 ],  // Buenos Aires    (-58.3816 + 360)
+        [ 312.1175, -15.7942 ],  // Brasilia        (-47.8825 + 360)
+        [ 264.6302, 29.7604 ],   // Houston         (-95.3698 + 360)
+        [ 275.6120, 33.7490 ],   // Atlanta         (-84.3880 + 360)
+        [ 282.9631, 38.9072 ],   // Washington DC   (-77.0369 + 360)
+        [ 272.3702, 41.8781 ]    // Chicago         (-87.6298 + 360)
+    ];
+
     map.addSource('wilford-route', {
         type: 'geojson',
         data: {
             type: 'Feature',
             geometry: {
                 type: 'LineString',
-                coordinates: routePoints.map(point => point.coordinates)
+                coordinates: lineCoordinates
             }
         }
     });
