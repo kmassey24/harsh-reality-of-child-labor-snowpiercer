@@ -65,8 +65,8 @@ body {
 }
 
 .w-marker-red {
-    width: 28px;
-    height: 28px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     background: #c61f1f;
     color: white;
@@ -277,11 +277,10 @@ routePoints.forEach(point => {
     // choose color
     if (point.color === "yellow") {
         el.className = 'w-marker-yellow';
+        el.textContent = 'W';
     } else {
         el.className = 'w-marker-red';
     }
-
-    el.textContent = 'W';
 
     const marker = new mapboxgl.Marker(el)
         .setLngLat(point.coordinates);
