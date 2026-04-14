@@ -99,6 +99,16 @@ body {
     padding: 12px;
     max-width: 240px;
 }
+    
+.mapboxgl-popup-content a {
+    color: #3386c0;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.mapboxgl-popup-content a:hover {
+    text-decoration: underline;
+}
 
 #sidebar {
     position: absolute;
@@ -340,9 +350,13 @@ routePoints.forEach(point => {
         el.style.cursor = 'pointer';
 
         const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
-            <h3>${point.name}</h3>
-            ${point.description ? `<p>${point.description}</p>` : ''}
-            ${point.link ? `<p><a href="${point.link}" target="_blank" rel="noopener noreferrer">Open link</a></p>` : ''}
+            <h3 style="line-height:1.2;">
+                ${point.name.split(" in ")[0]}<br>
+                <span style="font-size:13px; font-weight:normal;">
+                    ${point.name.split(" in ")[1] || ""}
+                </span>
+            </h3>
+            <p>${point.description}</p>
         `);
 
         marker.setPopup(popup);
