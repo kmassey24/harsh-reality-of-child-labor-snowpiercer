@@ -26,14 +26,14 @@ body {
     background-color: #3386c0;
     color: #fff;
     position: absolute;
-    bottom: 20px;           /* move to bottom */
+    bottom: 20px;         
     left: 50%;
-    transform: translateX(-50%);  /* perfectly center */
+    transform: translateX(-50%); 
     z-index: 3;
     border: none;
-    width: 140px;           /* smaller width */
+    width: 140px;          
     cursor: pointer;
-    padding: 6px 10px;      /* smaller padding */
+    padding: 6px 10px;     
     border-radius: 6px;
 }
 
@@ -190,6 +190,7 @@ map.on('style.load', () => {
 });
 
 /* ROTATION */
+    
 const secondsPerRevolution = 120;
 const maxSpinZoom = 5;
 const slowSpinZoom = 3;
@@ -236,45 +237,8 @@ document.getElementById('btn-spin').addEventListener('click', (e) => {
     }
 });
 
-/* APPROXIMATE WILFORD ROUTE POINTS
-   Replace or add coordinates to match your exact project map */
-/* const routePoints = [
-    { name: "Vancouver", coordinates: [-123.1207, 49.2827], description: "Approximate Wilford route point in western Canada.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" },
-    { name: "Chicago", coordinates: [-87.6298, 41.8781], description: "Major North American route point.", link: "https://snowpiercer.fandom.com/wiki/Wilford_Industries" },
-    { name: "New York", coordinates: [-74.0060, 40.7128], description: "Eastern North American route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer", color: "yellow" },
-    { name: "Atlanta", coordinates: [-84.3885, 33.7501], description: "Georgia Tech!.", link: "https://en.wikipedia.org/wiki/Snowpiercer", color: "yellow" },
-    { name: "San Antonio", coordinates: [-98.4946, 29.4252], color: "red" },
-    { name: "Mexico City", coordinates: [-99.1332, 19.4326], description: "Approximate Central America route point.", link: "https://en.wikipedia.org/wiki/Child_labour" },
-    { name: "Panama", coordinates: [-79.5199, 8.9824], description: "Connecting North and South America.", link: "https://www.ilo.org/" },
-    { name: "Bogotá", coordinates: [-74.0721, 4.7110], description: "Northern South America route point.", link: "https://www.unicef.org/" },
-    { name: "Lima", coordinates: [-77.0428, -12.0464], description: "Western South America route point.", link: "https://www.unicef.org/protection/child-labour" },
-    { name: "Santiago", coordinates: [-70.6693, -33.4489], description: "Southern South America route point.", link: "https://www.hrw.org/" },
-    { name: "Buenos Aires", coordinates: [-58.3816, -34.6037], description: "Atlantic side South America route point.", link: "https://www.ilo.org/global/topics/child-labour/" },
-    { name: "Rio de Janeiro", coordinates: [-43.1729, -22.9068], description: "Eastern South America route point.", link: "https://www.unicef.org/" },
-    { name: "Dakar", coordinates: [-17.4677, 14.7167], description: "West Africa route point.", link: "https://www.ilo.org/" },
-    { name: "Lagos", coordinates: [3.3792, 6.5244], description: "West Africa inland route point.", link: "https://www.unicef.org/" },
-    { name: "Nairobi", coordinates: [36.8219, -1.2921], description: "East Africa route point.", link: "https://www.hrw.org/topic/childrens-rights" },
-    { name: "Cape Town", coordinates: [18.4241, -33.9249], description: "Southern Africa route point.", link: "https://www.ilo.org/" },
-    { name: "Cairo", coordinates: [31.2357, 30.0444], description: "North Africa to Middle East connection.", link: "https://www.unicef.org/" },
-    { name: "Istanbul", coordinates: [28.9784, 41.0082], description: "Europe and Asia connection point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
-    { name: "Berlin", coordinates: [13.4050, 52.5200], description: "Central Europe route point.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" },
-    { name: "Warsaw", coordinates: [21.0122, 52.2297], description: "Eastern Europe route point.", link: "https://en.wikipedia.org/wiki/Wilford_Industries" },
-    { name: "Moscow", coordinates: [37.6173, 55.7558], description: "Western Russia route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
-    { name: "Novosibirsk", coordinates: [82.9204, 55.0302], description: "Siberian route point.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" },
-    { name: "Vladivostok", coordinates: [131.8855, 43.1155], description: "Far East Russia route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
-    { name: "Seoul", coordinates: [126.9780, 37.5665], description: "East Asia route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
-    { name: "Beijing", coordinates: [116.4074, 39.9042], description: "Northern China route point.", link: "https://www.unicef.org/china" },
-    { name: "Delhi", coordinates: [77.1025, 28.7041], description: "South Asia route point.", link: "https://www.unicef.org/india/what-we-do/child-labour" },
-    { name: "Mumbai", coordinates: [72.8777, 19.0760], description: "Western India route point.", link: "https://www.ilo.org/" },
-    { name: "Bangkok", coordinates: [100.5018, 13.7563], description: "Southeast Asia route point.", link: "https://www.unicef.org/eap/" },
-    { name: "Jakarta", coordinates: [106.8456, -6.2088], description: "Indonesia route point.", link: "https://www.ilo.org/" },
-    { name: "Perth", coordinates: [115.8605, -31.9505], description: "Western Australia route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
-    { name: "Adelaide", coordinates: [138.6007, -34.9285], description: "Southern Australia route point.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" },
-    { name: "Melbourne", coordinates: [144.9631, -37.8136], description: "Southeastern Australia route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
-    { name: "Sydney", coordinates: [151.2093, -33.8688], description: "Eastern Australia route point.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" },
-    { name: "Brisbane", coordinates: [153.0251, -27.4698], description: "Northeastern Australia route point.", link: "https://en.wikipedia.org/wiki/Snowpiercer" },
-    { name: "Anchorage", coordinates: [-149.9003, 61.2181], description: "Pacific return route point.", link: "https://snowpiercer.fandom.com/wiki/Snowpiercer" }
-]; */
+/* APPROXIMATE WILFORD ROUTE POINTS */
+
 const routePoints = [
     { name: "Chicago, Illinois", coordinates: [-87.6298, 41.8781] },
     { name: "Montreal, Quebec", coordinates: [-73.5673, 45.5017] },
@@ -331,6 +295,7 @@ const routePoints = [
 ];
 
 /* MARKERS + POPUPS */
+    
 const popupMarkers = {};
 
 routePoints.forEach(point => {
@@ -384,7 +349,6 @@ document.querySelectorAll('.section-btn').forEach(button => {
 
         if (target) {
 
-            // STOP rotation
             spinEnabled = false;
             map.stop();
             document.getElementById('btn-spin').innerHTML = 'Start rotation';
@@ -403,6 +367,7 @@ document.querySelectorAll('.section-btn').forEach(button => {
 });
     
 /* CONNECTING LINE */
+    
 map.on('load', () => {
     const lineCoordinates = [
         [ -87.6298, 41.8781 ],   // Chicago
