@@ -343,6 +343,12 @@ routePoints.forEach(point => {
         el.className = 'w-marker-red';
     }
 
+    el.addEventListener('click', () => {
+        spinEnabled = false;
+        map.stop();
+        document.getElementById('btn-spin').innerHTML = 'Start rotation';
+    });
+
     const marker = new mapboxgl.Marker(el)
         .setLngLat(point.coordinates);
 
@@ -377,6 +383,12 @@ document.querySelectorAll('.section-btn').forEach(button => {
         const target = popupMarkers[targetName];
 
         if (target) {
+
+            // STOP rotation
+            spinEnabled = false;
+            map.stop();
+            document.getElementById('btn-spin').innerHTML = 'Start rotation';
+
             map.flyTo({
                 center: target.coordinates,
                 zoom: 4,
@@ -389,7 +401,7 @@ document.querySelectorAll('.section-btn').forEach(button => {
         }
     });
 });
-
+    
 /* CONNECTING LINE */
 map.on('load', () => {
     const lineCoordinates = [
